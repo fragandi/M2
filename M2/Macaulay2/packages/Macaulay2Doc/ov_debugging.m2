@@ -13,8 +13,10 @@ document {
 	TO "assert",
 	TO "generateAssertions",
 	TO "benchmark",
+	TO "breakpoint",
 	TO "Browse::browse",
 	TO "code",
+	TO "finish",
 	TO "current",
 	TO "currentPosition",
 	TO "lineNumber", -- TODO: rename to currentLineNumber
@@ -25,6 +27,7 @@ document {
 	-- TO "currentDirectory",
 	TO "pseudocode",
 	TO "disassemble",
+	TO "parse",
 	TO "frames",
 	TO functionBody,
 	TO dictionary,
@@ -80,7 +83,7 @@ document {
     "Let's peek at the code of the function ", TT "g", ".",
     EXAMPLE "code g",
     "We see that the function g calls a function ", TT "f", ", but ", TT "f", " is not visible to us
-    (because ", TT "f", " is a local variable).  In emacs' ", EM "Macaulay2 Interaction Mode", ", pressing
+    (because ", TT "f", " is a local variable).  In Emacs' ", EM "Macaulay2 Interaction Mode", ", pressing
     return (", TT "RET", " or ", TT "enter", ") after positioning the cursor on the output line displaying the file name and line number
     will bring up the source code in a new buffer.",
     PARA{"The first few times we use ", TT "g", ", it seems to work."},
@@ -327,6 +330,72 @@ document {
 	  }
      }
 
+doc ///
+  Key
+    Error
+    (NewFromMethod, Error, Thing)
+  Headline
+    error information
+  Description
+    Text
+      An instance of this class may be caught when an error occurs inside a
+      @TO symbol trap@ or @TO symbol try@ statement.  The error message may be
+      recovered using @TO toString@ and the location using @TO locate@.
+    Example
+      (val, err) = trap 1/0
+      toString err
+      locate err
+    Text
+      An @CODE "Error"@ object may be constructed from an error message.
+    Example
+      err = new Error from "foo"
+    Text
+      An error may be raised from an @CODE "Error"@ object using @TO error@.
+    Example
+      stopIfError = false
+      error err
+    Text
+      It is possible to create subclasses of @CODE "Error"@ for finer error
+      handling.
+    Example
+      MyError = new SelfInitializingType of Error
+      try error MyError "bar" except err do err
+  SeeAlso
+    symbol try
+    symbol trap
+    error
+///
+
+doc ///
+  Key
+    symbol trap
+  Headline
+    trap an error
+  Usage
+    trap c
+  Description
+    Text
+      The code @VAR "c"@ is evaluated and a sequence containing two elements
+      is returned.  If the evaluation completes successfully, then the first
+      element is the value and the second element is null.
+    Example
+      trap 5
+    Text
+      If an error occurs, then the first element is null and the second element
+      is an @TO Error@ object containing information about the error is
+      returned.
+    Example
+      trap 1/0
+    Text
+      Note that this is a @TO Keyword@, not a method, and so it is not
+      necessary to enclose @VAR "c"@ in parentheses.
+    Example
+      trap 5 == "foo"
+      {trap error "bar", 1/2}
+      trap 1/0; 1/2
+  SeeAlso
+    symbol try
+///
 
 document {
      Key => "recursionLimit",
@@ -358,7 +427,6 @@ document {
      SeeAlso => { "recursionLimit" }
      }
 
-
 document {
      Key => FilePosition,
      Headline => "the class of all file positions",
@@ -369,6 +437,10 @@ document {
      A single pair is a position, two form a range. The last pair is the central point of interest in that range."
      }
 
+undocumented {
+    (symbol |, FilePosition, String),
+    (symbol |, String, FilePosition),
+}
 
 document {
      Key => uncurry,
@@ -532,6 +604,26 @@ document {
      beforehand.",
      }
 
+document {
+  Key => "breakpoint",
+  Headline => "set a breakpoint to stop execution at a particular point in the code and enter the debugger",
+  Usage => "breakpoint s",
+  Consequences => {
+    {"At the time the code including ", TT "breakpoint s", " is executed, the execution will stop right before ",
+    TT "s", ", and the debugger will be entered."},
+  },
+  PARA { "Setting a breakpoint is a way to stop execution at a particular point in the code and enter the debugger.
+  Then, commands like ", TT "step", " ", TT "continue", " ", TT "finish", " and so on as in the following demonstration." },
+  EXAMPLE lines ///
+  load "Macaulay2Doc/demos/demo2.m2"
+  code h
+  h 1 
+  step 
+  finish 
+  ///,
+  SeeAlso => {"step", "continue", "finish", "break", "error"}
+}
+
 undocumented {(code, Nothing)}
 
 document {
@@ -615,6 +707,38 @@ document {
      }
 
 document {
+     Key => "finish",
+     Headline => "finish the current stack frame in the debugger",
+     Usage => "finish",
+     Inputs => {},
+     Consequences => {
+	  {"This command is defined within the debugger.  The current expression is executed and execution
+	       is continued until either (i) another stopping condition is encountered or (ii) the current stack frame is finished
+         running." }
+	  },
+     PARA {
+	  "One useful way to debug code suspected of being in error is to insert an explicit breakpoint, such
+	  as ", TT ///breakpoint "debug me"///, ", and start stepping from there. Once you have found the issue
+    within a function, you can call ", TT ///finish///, " to finish the function call.
+    In the following example, the function ", TT ///G///, " calls the function ", TT ///F///, " which has a
+    breakpoint defined inside of it. We execute ", TT ///G(1)///, " which will stop at the defined breakpoint.
+    We can step to get the next line. Once we see that next line, we want to run through the rest of the call to ",
+    TT ///F///, " but stop as soon as we get back up to the main call of ", TT ///G///, ". The final call to ", TO "continue",
+    " then finishes the call to ", TT ///G///, "."
+	  },
+     EXAMPLE lines ///
+     load "Macaulay2Doc/demos/demo2.m2"
+     code F
+     code G
+     G(1)
+     step
+     finish
+     continue
+     ///,
+     SeeAlso => { "debugging" , "step" , "continue" }
+     }
+
+document {
      Key => edit,
      Headline => "edit source code",
      SYNOPSIS {
@@ -673,7 +797,7 @@ document {
      PARA{
 	  "The name of the user's preferred editor is take from the environment
 	  variable ", TT "EDITOR", ".  If X is running and the editor is not
-	  emacs, then the editor is started in a new ", TT "xterm", " window."
+	  Emacs, then the editor is started in a new ", TT "xterm", " window."
 	  },
      PARA{
 	  "For an interactive example, try ", TT "edit(dim,Module)", ".",
