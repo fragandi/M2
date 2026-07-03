@@ -153,15 +153,8 @@ Subring == Subring := (S1, S2) -> (
     )
 
 
-
--*
-
--- given an element of S, write it in terms of the p_i's
-
-*-
-
 -----------------------------------------
---- Load documentation files ------------
+--- Load documentation and test files ---
 -----------------------------------------
 beginDocumentation()
 
