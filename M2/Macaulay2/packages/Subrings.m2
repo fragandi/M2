@@ -21,30 +21,40 @@ export {"subring",
     "presentationMap",
     "presentationIdeal",
     "toQuotientRing",
-    "isSubringElement"}
+    "isSubringElement",
+    "GeneratorSymbol"
+    }
 
 Subring = new Type of HashTable
 
 -- a method to create subrings from a `Matrix` of generators
-subring = method()
+subring = method(
+    Options => {GeneratorSymbol=>null}
+    )
 subring Matrix := genMatrix -> (
     if M.cache#?Subring then return M.cache#Subring;
     -- compute presentation ring
     R := ring genMatrix;
-    nGens := numgens source genMatrix;
-    k := coefficientRing R;
-    p := symbol p;
-    P := k[p_0..p_(nGens-1)];
-    -- compute presentation map 
-    f := map(R, P, genMatrix);
+    -- deal with towers of rings
+    (F,RtoF,FtoR) := flattenRing(R,Result=>3);
+    coeffRing := coefficientRing F;
+    local subductionRing;
+    if instance(opts.GeneratorSymbol,Nothing) then
+        subductionRing = coeffRing(monoid[Variables => numcols M])
+    else if instance(opts.GeneratorSymbol,Symbol) then
+        subductionRing = coeffRing[opts.GeneratorSymbol_1..opts.GeneratorSymbol_(numcols M)]
+    else error("Invalid GeneratorSymbol option");
+    presentationMap := map(R,subductionRing,M);
     S := new Subring from {
-        generators => genMatrix,
-        ambient => R,
-        -- presentation ring: one variable for each generator
-        presentationRing => P,
-        -- presentation map: presentation ring --> ambient ring, image(f)=S
-        presentationMap => f,
-        cache => new CacheTable
+        "ambientRing" => R,
+        "flattenedRing" => F,
+        "generators" => RtoF M,
+        "originalGenerators" => M,
+        "presentationRing" => subductionRing,
+        "presentationMap" => presentationMap,
+        "flatteningMap" => RtoF,
+        "inverseFlatteningMap" => FtoR,
+        cache => new CacheTable from {if M.cache#?Subring then M.cache#Subring}
         };
     M.cache#Subring = S
     )
@@ -54,14 +64,17 @@ subring List := genList -> (
     subring matrix {genList}
     )
 
+flattenedRing = method()
+flattenedRing Subring := S -> S#"flattenedRing"
+
 presentationRing = method()
 presentationRing Subring := S -> (
-    S#presentationRing
+    S#"presentationRing"
     )
 
 presentationMap = method()
 presentationMap Subring := S -> (
-    S#presentationMap
+    S#"presentationMap"
     )
 
 presentationIdeal = method()
@@ -78,21 +91,22 @@ toQuotientRing Subring := S -> (
     return P/I;
     )
 
-subringGenerators = method()
-subringGenerators Subring := S -> S#generators
+subringGenerators = method() -- gens that live in flattened ring
+subringGenerators Subring := S -> S#"generators"
 
-generators Subring := Matrix => opts -> S -> (
-    if  S#?generators then S#generators
-    else if S.cache.?generators then S.cache.generators
-    else S.cache.generators = S#generators)
+generators Subring := Matrix => opts -> S -> ( -- gens that live in ambient ring
+    S#"originalGenerators"
+    )
 
-ambient Subring := S -> S#ambient
+ambient Subring := S -> S#"ambientRing"
+
+numgens Subring := S -> numcols gens S
 
 -- format printing of Subring type
 net Subring := S -> (
     R := ambient S;
     P := presentationRing S;
-    g := flatten entries S#generators;
+    g := flatten entries gens S;
     genstr := "";
     if #g <= 3 then (
         genstr = toString(g_{0 .. min(2, #g-1)});
