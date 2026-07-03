@@ -32,7 +32,7 @@ subring = method(
     Options => {GeneratorSymbol=>null}
     )
 subring Matrix := genMatrix -> (
-    if M.cache#?Subring then return M.cache#Subring;
+    if genMatrix.cache#?Subring then return genMatrix.cache#Subring;
     -- compute presentation ring
     R := ring genMatrix;
     -- deal with towers of rings
@@ -40,23 +40,23 @@ subring Matrix := genMatrix -> (
     coeffRing := coefficientRing F;
     local subductionRing;
     if instance(opts.GeneratorSymbol,Nothing) then
-        subductionRing = coeffRing(monoid[Variables => numcols M])
+        subductionRing = coeffRing(monoid[Variables => numcols genMatrix])
     else if instance(opts.GeneratorSymbol,Symbol) then
-        subductionRing = coeffRing[opts.GeneratorSymbol_1..opts.GeneratorSymbol_(numcols M)]
+        subductionRing = coeffRing[opts.GeneratorSymbol_1..opts.GeneratorSymbol_(numcols genMatrix)]
     else error("Invalid GeneratorSymbol option");
-    presentationMap := map(R,subductionRing,M);
+    presentationMap := map(R,subductionRing,genMatrix);
     S := new Subring from {
         "ambientRing" => R,
         "flattenedRing" => F,
-        "generators" => RtoF M,
-        "originalGenerators" => M,
+        "generators" => RtoF genMatrix,
+        "originalGenerators" => genMatrix,
         "presentationRing" => subductionRing,
         "presentationMap" => presentationMap,
         "flatteningMap" => RtoF,
         "inverseFlatteningMap" => FtoR,
-        cache => new CacheTable from {if M.cache#?Subring then M.cache#Subring}
+        cache => new CacheTable from {if genMatrix.cache#?Subring then genMatrix.cache#Subring}
         };
-    M.cache#Subring = S
+    genMatrix.cache#Subring = S
     )
 
 -- a method to create subrings from a `List` of generators
