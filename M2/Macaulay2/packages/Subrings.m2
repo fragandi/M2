@@ -31,7 +31,7 @@ Subring = new Type of HashTable
 subring = method(
     Options => {GeneratorSymbol=>null}
     )
-subring Matrix := genMatrix -> (
+subring Matrix := opts -> genMatrix -> (
     if genMatrix.cache#?Subring then return genMatrix.cache#Subring;
     -- compute presentation ring
     R := ring genMatrix;
