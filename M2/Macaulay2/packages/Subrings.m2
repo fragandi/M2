@@ -1,14 +1,15 @@
 -- -*- coding: utf-8 -*-
 newPackage(
     "Subrings",
-    Version => "1.0",
-    Date => "June 6, 2023",
+    Version => "1.1",
+    Date => "July 3, 2026",
     Authors => {
 	    {Name => "Francesca Gandini", Email => "fra.gandi.phd@gmail.com"},
         {Name => "Casey Hill", Email => "casey.hill@uky.edu"},
         {Name => "Trevor K. Karn", Email => "karnx018@umn.edu"},
         {Name => "Miranda Moore", Email => "moor2340@umn.edu"},
-        {Name => "Christopher O'Neill", Email => "cdoneill@sdsu.edu"}},
+        {Name => "Christopher O'Neill", Email => "cdoneill@sdsu.edu"},
+        {Name => "Oliver Clarke", Email => "oliver.clarke@durham.ac.uk"}},
     Headline => "a package for subrings",
     Keywords => {"Commutative Algebra"},
     AuxiliaryFiles => true,
@@ -54,14 +55,14 @@ subring Matrix := opts -> genMatrix -> (
         "presentationMap" => presentationMap,
         "flatteningMap" => RtoF,
         "inverseFlatteningMap" => FtoR,
-        cache => new CacheTable from {if genMatrix.cache#?Subring then genMatrix.cache#Subring}
+        cache => new CacheTable from {}
         };
     genMatrix.cache#Subring = S
     )
 
 -- a method to create subrings from a `List` of generators
-subring List := genList -> (
-    subring matrix {genList}
+subring List := opts -> genList -> (
+    subring(matrix {genList}, opts)
     )
 
 flattenedRing = method()
@@ -162,7 +163,7 @@ load "./Subrings/SubringTests.m2"
 end--
 
 restart
-installPackage "Subring"
+installPackage "Subrings"
 R = QQ[x]
 S1 = subring {x, x^2}
 S2 = subring {x^2}
