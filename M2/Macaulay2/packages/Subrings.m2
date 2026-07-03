@@ -23,7 +23,8 @@ export {"subring",
     "presentationIdeal",
     "toQuotientRing",
     "isSubringElement",
-    "GeneratorSymbol"
+    "GeneratorSymbol",
+    "flattenedRing"
     }
 
 Subring = new Type of HashTable
@@ -121,19 +122,23 @@ net Subring := S -> (
 -- given a subring S and an element x of the ambient ring, checks whether x is in S
 isSubringElement = method()
 isSubringElement(RingElement, Subring) := (r, S) -> (
-    R := ambient S;
-    P := presentationRing S;
-    T := tensor(R, P, MonomialOrder=>Eliminate(numgens R));
-    gT := vars T;
-    R2T := map(T, R, gT_{0 .. numgens R - 1});
-    P2T := map(T, P, gT_{numgens R .. numgens T - 1});
-    ambGens := gens R;
-    subringGens := subringGenerators S;
-    presGens := gens P;
-    graphIdealGens := for i from 0 to (-1 + numgens P) list
-     (P2T(presGens_i) - R2T(subringGens_i)_0);
-    I := ideal graphIdealGens;
-    M := matrix {{R2T(r) % I}};
+    if not S.cache#?"tensorGraphIdeal" and not S.cache#?"ambientToTensor" then (
+        R := ambient S;
+        F := flattenedRing S;
+        P := presentationRing S;
+        T := tensor(F, P, MonomialOrder=>Eliminate(numgens F));
+        gT := vars T;
+        F2T := map(T, F, gT_{0 .. numgens F - 1});
+        R2T := F2T * (S#"flatteningMap");
+        P2T := map(T, P, gT_{numgens F .. numgens T - 1});
+        subringGens := subringGenerators S;
+        presGens := matrix {gens P};
+        graphIdealGens := P2T(presGens) - F2T(subringGens);
+        I := ideal graphIdealGens;
+        S.cache#"tensorGraphIdeal"=I;
+        S.cache#"ambientToTensor"=R2T;
+        );
+    M := matrix {{S.cache#"ambientToTensor"(r) % S.cache#"tensorGraphIdeal"}};
     selectInSubring(1, M) == M
     )
 
@@ -182,3 +187,11 @@ gens S1
 -- run tests
 check Subring
 
+
+
+R = QQ[x][y]
+S = subring {x+y, x*y}
+r = x^4 + y^4
+isSubringElement(r, S)
+isSubringElement(r + x, S)
+isSubringElement(r + x*y, S)
