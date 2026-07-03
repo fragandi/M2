@@ -36,3 +36,11 @@ TEST ///
     assert(numgens source f == 3)
     assert(ambient S === R)
 ///
+
+
+TEST /// -- check towers of polynomial rings
+    R := QQ[x][y];
+    S := subring {x+y, x*y};
+    assert(isSubringElement(x^3+y^3, S));
+    assert(not isSubringElement(x^3+y^3+x, S));
+///
