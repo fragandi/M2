@@ -16,42 +16,37 @@ newPackage(
 
 
 export {"subring",
-        "subringGenerators",
-	"presentationRing",
-	"presentationMap",
-        "presentationIdeal",
-        "toQuotientRing",
-	"isSubringElement"}
+    "subringGenerators",
+    "presentationRing",
+    "presentationMap",
+    "presentationIdeal",
+    "toQuotientRing",
+    "isSubringElement"}
 
 Subring = new Type of HashTable
 
 -- a method to create subrings from a `Matrix` of generators
 subring = method()
 subring Matrix := genMatrix -> (
-    
+    if M.cache#?Subring then return M.cache#Subring;
     -- compute presentation ring
     R := ring genMatrix;
     nGens := numgens source genMatrix;
     k := coefficientRing R;
     p := symbol p;
     P := k[p_0..p_(nGens-1)];
-    
     -- compute presentation map 
     f := map(R, P, genMatrix);
-    
     S := new Subring from {
-	generators => genMatrix,
-	ambient => R,
-	
-	-- presentation ring: one variable for each generator
-	presentationRing => P,
-      
-	-- presentation map: presentation ring --> ambient ring, image(f)=S
-	presentationMap => f,
-	 
-	cache => new CacheTable
-	};
-    S
+        generators => genMatrix,
+        ambient => R,
+        -- presentation ring: one variable for each generator
+        presentationRing => P,
+        -- presentation map: presentation ring --> ambient ring, image(f)=S
+        presentationMap => f,
+        cache => new CacheTable
+        };
+    M.cache#Subring = S
     )
 
 -- a method to create subrings from a `List` of generators
