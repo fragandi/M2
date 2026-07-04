@@ -27,7 +27,8 @@ export {"subring",
     "toQuotientRing",
     "isSubringElement",
     "GeneratorSymbol",
-    "flattenedRing"
+    "flattenedRing",
+    "Subring",
     }
 
 Subring = new Type of HashTable
