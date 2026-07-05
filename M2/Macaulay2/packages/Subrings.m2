@@ -73,6 +73,8 @@ subring List := opts -> genList -> (
 flattenedRing = method()
 flattenedRing Subring := S -> S#"flattenedRing"
 
+flattenRing Subring := opts -> S -> S#"flattenedRing"
+
 presentationRing = method()
 presentationRing Subring := S -> (
     S#"presentationRing"
@@ -139,7 +141,7 @@ isSubringElement = method()
 isSubringElement(RingElement, Subring) := (r, S) -> (
     if not S.cache#?"tensorGraphIdeal" and not S.cache#?"ambientToTensor" then (
         R := ambient S;
-        F := flattenedRing S;
+        F := flattenRing S;
         P := presentationRing S;
         T := tensor(F, P, MonomialOrder=>Eliminate(numgens F));
         gT := vars T;
@@ -175,6 +177,7 @@ load "./Subrings/SubringTests.m2"
 
 end--
 
+uninstallPackage "Subrings"
 restart
 installPackage "Subrings"
 R = QQ[x]
