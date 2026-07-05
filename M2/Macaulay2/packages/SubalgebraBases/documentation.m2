@@ -2643,8 +2643,8 @@ doc ///
     Headline
         The flattened ring of a subring or sagbiBasis
     Usage
-        result = flattened S
-        result = flattened SB
+        result = flattenedRing S
+        result = flattenedRing SB
     Inputs
         S:Subring
         SB:SAGBIBasis
