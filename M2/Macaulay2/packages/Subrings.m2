@@ -4,14 +4,13 @@ newPackage(
     Version => "1.1",
     Date => "July 3, 2026",
     Authors => {
-	    {Name => "Francesca Gandini", Email => "fra.gandi.phd@gmail.com"},
+      {Name => "Francesca Gandini", Email => "fra.gandi.phd@gmail.com"},
       {Name => "Casey Hill", Email => "casey.hill@uky.edu"},
       {Name => "Trevor K. Karn", Email => "karnx018@umn.edu"},
       {Name => "Miranda Moore", Email => "moor2340@umn.edu"},
       {Name => "Christopher O'Neill", Email => "cdoneill@sdsu.edu"},
       {Name => "Oliver Clarke", Email => "oliver.clarke@durham.ac.uk"}
       },
-
     Headline => "a package for subrings",
     Keywords => {"Commutative Algebra"},
     AuxiliaryFiles => true,
