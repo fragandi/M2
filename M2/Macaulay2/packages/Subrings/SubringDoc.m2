@@ -46,27 +46,26 @@ doc ///
 
 doc ///
     Key
-    	Subring
+        Subring
     Headline
-    	the class of finitely generated subrings of polynomial rings
+        the class of finitely generated subrings of polynomial rings
     Description
-	Text
-	    To see how to specify a subring, see @TO subring @.
-
+        Text
+            To see how to specify a subring, see @TO subring @.
             A subring of @ ofClass{PolynomialRing} @ is a ring with unity
-	    contained inside of another ambient ring that is closed
-	    under the operations of the ambient ring.
+            contained inside of another ambient ring that is closed
+            under the operations of the ambient ring.
 
-	    The user can specify either @ ofClass{List} @ or @ ofClass{Matrix} @
-	    whose entries are the generators.
-
-    	Example
+            The user can specify either @ ofClass{List} @ or @ ofClass{Matrix} @
+            whose entries are the generators.
+        Example
             R = QQ[x,y];
-	    L = {x^2, y^2};
-	    S = subring L
-
-	    M = matrix({{x^2, y^2}})
-	    S = subring M
+            L = {x^2, y^2};
+            S = subring L
+            M = matrix({{x^2, y^2}})
+            S = subring M
+    SeeAlso
+        subring
 ///
 
 
@@ -75,6 +74,7 @@ doc ///
         subring
         (subring, Matrix)
         (subring, List)
+        [subring, GeneratorSymbol]
     Headline
          Construct a subring of a polynomial ring
     Usage
@@ -85,6 +85,8 @@ doc ///
             of generators for a subring of a @ ofClass{PolynomialRing} @
         L:List
             of generators for a subring of a @ ofClass{PolynomialRing} @
+        GeneratorSymbol=>Symbol
+            a symbol to be used for the variables of the @ TT "presentationRing" @.
     Outputs
         S:Subring
             the subring of the polynomial ring
@@ -101,6 +103,14 @@ doc ///
             R = QQ[x,y]
             L = {x^2, x*y, y^2}
             S = subring L
+    SeeAlso
+        Subring
+        (gens, Subring)
+        (ambient, Subring)
+        (numgens, Subring)
+        (net, Subring)
+        presentationIdeal
+        presentationRing
 ///
 
 
@@ -120,255 +130,289 @@ doc ///
     Description
         Text
             This function finds the presentation ideal of the subring, which is defined to
-	    be the presentation ring modulo the presentation map.
+            be the presentation ring modulo the presentation map.
         Example
             R = QQ[x,y]
             S = subring {x^2, x*y, y^2}
             I = presentationIdeal S
+    SeeAlso
+        Subring
+        subring
+
 ///
 
 doc ///
-  Key
-   presentationRing
-   (presentationRing, Subring)
-  Headline
-   a polynomial ring with a variable for each subring generator
-  Usage
-   P = presentationRing S
-  Inputs
-   S:Subring
-  Outputs
-   P:PolynomialRing
-       a polynomial ring with one variable for each generator of the subring
-  Description
-   Text
-    The {\tt presentationRing} of a subring {\tt S} is a polynomial ring
-    with a variable for each generator of {\tt S}.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g;
-    numgens presentationRing S
-   Text
-    This should not be confused with @TO toQuotientRing @,
-    which yields a quotient of the presentation ring. In this example,
-    even though there is an algebraic relation
-    between the three generators, the presentation ring doesn't know
-    that.
-   Example
-    P = presentationRing S;
-    P_0*P_2 - P_1^2
+    Key
+        presentationRing
+        (presentationRing, Subring)
+    Headline
+        a polynomial ring with a variable for each subring generator
+    Usage
+        P = presentationRing S
+    Inputs
+        S:Subring
+    Outputs
+        P:PolynomialRing
+            a polynomial ring with one variable for each generator of the subring
+    Description
+        Text
+            The {\tt presentationRing} of a subring {\tt S} is a polynomial ring
+            with a variable for each generator of {\tt S}.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g;
+            numgens presentationRing S
+        Text
+            This should not be confused with @TO toQuotientRing @,
+            which yields a quotient of the presentation ring. In this example,
+            even though there is an algebraic relation
+            between the three generators, the presentation ring doesn't know
+            that.
+        Example
+            P = presentationRing S;
+            P_0*P_2 - P_1^2
+    SeeAlso
+        Subring
+        subring
 ///
 
 doc ///
-  Key
-   presentationMap
-   (presentationMap, Subring)
-  Headline
-   the map from the presentation ring into a subring
-  Usage
-   f = presentationMap S
-  Inputs
-   S:Subring
-  Outputs
-   f:RingMap
-         the map sending polynomial ring generators to subring generators
-  Description
-   Text
-    There exists a map sending each generator of the presentation ring to
-    the corresponding element of the ambient ring. This is that map.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g;
-    f = presentationMap S
-    P = presentationRing S
-    p = P_0 * P_2 - P_1^2
-    f(p)
-///
+    Key
+        presentationMap
+        (presentationMap, Subring)
+    Headline
+        the map from the presentation ring into a subring
+    Usage
+        f = presentationMap S
+    Inputs
+        S:Subring
+    Outputs
+        f:RingMap
+            the map sending polynomial ring generators to subring generators
+    Description
+        Text
+            There exists a map sending each generator of the presentation ring to
+            the corresponding element of the ambient ring. This is that map.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g;
+            f = presentationMap S
+            P = presentationRing S
+            p = P_0 * P_2 - P_1^2
+            f(p)
+    SeeAlso
+        Subring
+        subring
 
-
-doc ///
-  Key
-   isSubringElement
-   (isSubringElement, RingElement, Subring)
-  Headline
-   query if an element of ambient ring is in the subring
-  Usage
-   isSubringElement(x, S)
-  Inputs
-   x:RingElement
-        an element of the ambient ring
-   S:Subring
-        the subring which may or may not contain x
-  Description
-   Text
-    This determines if an element is in the subring.
-    In the first example, it is.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g;
-    isSubringElement(x^2 + x*y, S)
-   Text
-    In this example the element is not in the subring.
-   Example
-    isSubringElement(x, S)
 ///
 
 doc ///
-  Key
-   toQuotientRing
-   (toQuotientRing, Subring)
-  Headline
-   create a quotient ring isomorphic to the subring
-  Usage
-   Q = toQuotientRing S
-  Inputs
-   S:Subring
-  Outputs
-   Q:PolynomialRing
-        isomorphic to the subring
-  Description
-   Text
-    The subring is isomorphic to a quotient of a polynomial ring
-    with a variable corresponding to each generator. This
-    function returns such a quotient ring.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g;
-    toQuotientRing(S)
-   Text
-    This should not be confused with @TO presentationRing@,
-    which gives only the ambient ring of {\tt Q}.
+    Key
+        isSubringElement
+        (isSubringElement, RingElement, Subring)
+    Headline
+        query if an element of ambient ring is in the subring
+    Usage
+        isSubringElement(x, S)
+    Inputs
+        x:RingElement
+            an element of the ambient ring
+        S:Subring
+            the subring which may or may not contain x
+    Description
+        Text
+            This determines if an element is in the subring.
+            In the first example, it is.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g;
+            isSubringElement(x^2 + x*y, S)
+        Text
+            In this example the element is not in the subring.
+        Example
+            isSubringElement(x, S)
+    SeeAlso
+        Subring
+        subring
+
 ///
 
 doc ///
-  Key
-   subringGenerators
-   (subringGenerators, Subring)
-   (generators, Subring)
-  Headline
-   return the matrix of generators for the subring
-  Usage
-   M = subringGenerators S
-   M = generators S
-   M = gens S
-  Inputs
-   S:Subring
-  Outputs
-   M:Matrix
-        containing the generators of {\tt S}.
-  Description
-   Text
-    The subring is generated by elements of the ambient ring. This function
-    returns a matrix (over the ambient ring) of these generators.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g;
-    toQuotientRing(S)
-   Text
-    The generators are as given by the user. In particular, they may not
-    be a minimal generating set if the generating set used to specify
-    the ring is itself nonminimal.
-   Example
-    R = QQ[x,y];
-    g = {x, x*y, y, y^2};
-    S = subring g;
-    subringGenerators(S)
-   Text
-    This method is also accessible through the generators method,
-    and thus through the shortened gens method.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g;
-    generators S
-    gens S
+    Key
+        toQuotientRing
+        (toQuotientRing, Subring)
+    Headline
+        create a quotient ring isomorphic to the subring
+    Usage
+        Q = toQuotientRing S
+    Inputs
+        S:Subring
+    Outputs
+        Q:PolynomialRing
+            isomorphic to the subring
+    Description
+        Text
+            The subring is isomorphic to a quotient of a polynomial ring
+            with a variable corresponding to each generator. This
+            function returns such a quotient ring.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g;
+            toQuotientRing(S)
+        Text
+            This should not be confused with @TO presentationRing@,
+            which gives only the ambient ring of {\tt Q}.
+    SeeAlso
+        Subring
+        subring
+
 ///
 
 doc ///
-  Key
-   (symbol ==, Subring, Subring)
-  Headline
-   check equality of subrings
-  Usage
-   S1 == S2
-  Description
-   Text
-    Two different subrings may be equal despite being specified by
-    different generating sets. This binary operator provides a way
-    to check whether or not two subrings are the same by checking
-    containments.
-   Example
-    R = QQ[x,y];
-    g1 = {x^2, x*y, y^2};
-    S1 = subring g1
-    g2 = {x^2, x*y, y^2, x^2*y^2};
-    S2 = subring g2
-    S1 == S2
-   Text
-    The ambient ring must be literally the same for two
-    subrings to be considered the same.
-   Example
-    R1 = QQ[x,y];
-    g1 = {x^2, y^2};
-    R2 = QQ[x,y];
-    g2 = {x^2, y^2};
-    R1 === R2
-    subring(g1) == subring(g2)
-   Text
-    Things could also go wrong if the ambient rings have different
-    numbers of generators.
-   Example
-    R3 = QQ[x,y,z];
-    g3 = {x^2, y^2};
-    subring(g1) == subring(g3)
-    subring(g2) == subring(g3)
+    Key
+        subringGenerators
+        (subringGenerators, Subring)
+        (generators, Subring)
+    Headline
+        return the matrix of generators for the subring
+    Usage
+        M = subringGenerators S
+        M = generators S
+        M = gens S
+    Inputs
+        S:Subring
+    Outputs
+        M:Matrix
+            containing the generators of {\tt S}.
+    Description
+        Text
+            The subring is generated by elements of the ambient ring. This function
+            returns a matrix (over the ambient ring) of these generators.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g;
+            toQuotientRing(S)
+        Text
+            The generators are as given by the user. In particular, they may not
+            be a minimal generating set if the generating set used to specify
+            the ring is itself nonminimal.
+        Example
+            R = QQ[x,y];
+            g = {x, x*y, y, y^2};
+            S = subring g;
+            subringGenerators(S)
+        Text
+            This method is also accessible through the generators method,
+            and thus through the shortened gens method.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g;
+            generators S
+            gens S
+    SeeAlso
+        Subring
+        subring
+
 ///
 
 doc ///
-  Key
-   (ambient, Subring)
-  Headline
-   get the ambient ring
-  Usage
-   R = ambient S
-  Inputs
-   S:Subring
-  Outputs
-   R:PolynomialRing
-        of which {\tt S} is understood to be a subset
-  Description
-   Text
-    A subring is by definition a subset of another ring.
-    This method returns that other ring.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g
-    R === ambient S
+    Key
+        (symbol ==, Subring, Subring)
+    Headline
+        check equality of subrings
+    Usage
+        S1 == S2
+    Description
+        Text
+            Two different subrings may be equal despite being specified by
+            different generating sets. This binary operator provides a way
+            to check whether or not two subrings are the same by checking
+            containments.
+        Example
+            R = QQ[x,y];
+            g1 = {x^2, x*y, y^2};
+            S1 = subring g1
+            g2 = {x^2, x*y, y^2, x^2*y^2};
+            S2 = subring g2
+            S1 == S2
+        Text
+            The ambient ring must be literally the same for two
+            subrings to be considered the same.
+        Example
+            R1 = QQ[x,y];
+            g1 = {x^2, y^2};
+            R2 = QQ[x,y];
+            g2 = {x^2, y^2};
+            R1 === R2
+            subring(g1) == subring(g2)
+        Text
+            Things could also go wrong if the ambient rings have different
+            numbers of generators.
+        Example
+            R3 = QQ[x,y,z];
+            g3 = {x^2, y^2};
+            subring(g1) == subring(g3)
+            subring(g2) == subring(g3)
+    SeeAlso
+        Subring
+        subring
+
 ///
 
 doc ///
-  Key
-   (net, Subring)
-  Headline
-   format for printing the subring
-  Usage
-   m = net S
-  Inputs
-   S:Subring
-  Outputs
-   m:Net
-        a succinct description of S
-  Description
-   Text
-    This provides the expression for printing a `Subring`.
-   Example
-    R = QQ[x,y];
-    g = {x^2, x*y, y^2};
-    S = subring g
+    Key
+        (ambient, Subring)
+    Headline
+        get the ambient ring
+    Usage
+        R = ambient S
+    Inputs
+        S:Subring
+    Outputs
+        R:PolynomialRing
+            of which {\tt S} is understood to be a subset
+    Description
+        Text
+            A subring is by definition a subset of another ring.
+            This method returns that other ring.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g
+            R === ambient S
+    SeeAlso
+        Subring
+        subring
+
+///
+
+doc ///
+    Key
+        (net, Subring)
+    Headline
+        format for printing the subring
+    Usage
+        m = net S
+    Inputs
+        S:Subring
+    Outputs
+        m:Net
+            a succinct description of S
+    Description
+        Text
+            This provides the expression for printing a `Subring`.
+        Example
+            R = QQ[x,y];
+            g = {x^2, x*y, y^2};
+            S = subring g
+    SeeAlso
+        Subring
+        subring
+
 ///
