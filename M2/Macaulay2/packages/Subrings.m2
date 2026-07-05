@@ -188,6 +188,9 @@ end--
 uninstallPackage "Subrings"
 restart
 installPackage "Subrings"
+needsPackage "TestAudit"
+testAudit("Subrings", ScoreReport => true)
+
 R = QQ[x]
 S1 = subring {x, x^2}
 S2 = subring {x^2}

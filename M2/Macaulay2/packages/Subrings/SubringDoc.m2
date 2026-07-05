@@ -416,3 +416,34 @@ doc ///
         subring
 
 ///
+
+-- flatenedRing
+doc ///
+    Key
+        flattenedRing
+        (flattenedRing, Subring)
+        (flattenRing, Subring)
+    Headline
+        The flattened ring of a subring
+    Usage
+        result = flattenedRing S
+    Inputs
+        S:Subring
+    Outputs
+        result:Ring
+            the flattened ring of the ambient ring
+    Description
+        Text
+            Returns the flattened ring of the ambient ring.
+            This may be a @TO "PolynomialRing"@ or @TO "QuotientRing"@.
+        Example
+            R = (QQ[x])[y]/ideal(x^2-y^3);
+            S = subring {x+y,x*y};
+            ambient S
+            flattenedRing S
+    SeeAlso
+        Subring
+        subring
+        (ambient, Subring)
+
+///
