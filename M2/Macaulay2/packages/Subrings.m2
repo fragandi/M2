@@ -207,7 +207,7 @@ mingens
 gens S1
 
 -- run tests
-check Subring
+check Subrings
 
 
 
