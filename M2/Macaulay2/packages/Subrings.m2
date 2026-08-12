@@ -11,7 +11,7 @@ newPackage(
       {Name => "Christopher O'Neill", Email => "cdoneill@sdsu.edu"},
       {Name => "Oliver Clarke", Email => "oliver.clarke@durham.ac.uk"}
       },
-    Headline => "a package for subrings",
+    Headline => "subrings of polynomial rings and quotients",
     Keywords => {"Commutative Algebra"},
     AuxiliaryFiles => true,
     )
