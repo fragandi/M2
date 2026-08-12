@@ -14,7 +14,6 @@ newPackage(
     Headline => "a package for subrings",
     Keywords => {"Commutative Algebra"},
     AuxiliaryFiles => true,
-    DebuggingMode => true
     )
 
 
